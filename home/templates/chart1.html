@@ -1,0 +1,190 @@
+<html>
+<head>
+
+  <script type="text/javascript">
+    window.onload = function () {
+
+      var chart = new CanvasJS.Chart("chartContainer", {
+        
+        data: [{
+          type: "bar",
+          showInLegend: true,
+          name: "To DO",
+          color: "Red",
+          dataPoints: [
+            { y: {{to_do}}, label: "Project" },
+            {% comment %} {% for g1 in group %}
+              var x=0;              
+              {% for t1 in task%}
+                {% if t1.user_name == g1.group_member %}
+                  {% if t1.task_status is 1%}
+                    x=x+1;
+                  {% endif %}
+                {% endif %}
+              {% endfor %}
+            { y: x, label: "{{g1.group_member}}" },
+            {% endfor %} {% endcomment %}
+          ]
+        },
+        {
+          type: "bar",
+          showInLegend: true,
+          name: "In Progress",
+          color: "Blue",
+          dataPoints: [
+            { y: {{in_pro}}, label: "Project" },
+            {% comment %} {% for g1 in group %}
+              var x=0;              
+              {% for t1 in task%}
+                {% if t1.user_name == g1.group_member %}
+                  {% if t1.task_status is 2%}
+                    x=x+1;
+                  {% endif %}
+                {% endif %}
+              {% endfor %}
+            { y: x, label: "{{g1.group_member}}" },
+            {% endfor %} {% endcomment %}
+            
+          ]
+        },
+        {
+          type: "bar",
+          showInLegend: true,
+          name: "Done",
+          color: "Green",
+          dataPoints: [
+            { y: {{done}}, label: "Project" },
+            {% comment %} {% for g1 in group %}
+              var x=0;              
+              {% for t1 in task%}
+                {% if t1.user_name == g1.group_member %}
+                  {% if t1.task_status is 3%}
+                    x=x+1;
+                  {% endif %}
+                {% endif %}
+              {% endfor %}
+            { y: x, label: "{{g1.group_member}}" },
+            {% endfor %} {% endcomment %}
+          ]
+        }]
+      });
+      chart.render();
+      
+      {% for g1 in group %}
+        var x=0;
+        var y=0;
+        var z=0;
+        
+        {% for t1 in task%}
+          {% if t1.user_name == g1.group_member %}
+            {% if t1.task_status is 1%}
+              x=x+1;
+            {% endif %}
+            {% if t1.task_status is 2%}
+              y=y+1;
+            {% endif %}
+            {% if t1.task_status is 3%}
+              z=z+1;
+            {% endif %}
+          {% endif %}
+        {% endfor %}
+        
+        var chart = new CanvasJS.Chart("chartContainer{{g1.group_member}}", {
+        
+        data: [{
+          type: "bar",
+          showInLegend: true,
+          name: "To DO",
+          color: "Red",
+          dataPoints: [
+            { y: x, label: "{{g1.group_member}}" }
+          ]
+        },
+        {
+          type: "bar",
+          showInLegend: true,
+          name: "In Progress",
+          color: "Blue",
+          dataPoints: [
+            { y: y, label: "{{g1.group_member}}" }
+          ]
+        },
+        {
+          type: "bar",
+          showInLegend: true,
+          name: "Done",
+          color: "Green",
+          dataPoints: [
+            { y: z, label: "{{g1.group_member}}" }
+          ]
+        }]
+      });
+      chart.render();
+
+      {% endfor %} 
+
+      }
+    </script>
+
+
+  <title>Home</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  {% load staticfiles %}
+  <link rel="stylesheet" href="{% static 'w3.css' %}" type='text/css'>
+  <link rel="stylesheet" href="{% static 'family=Raleway' %}" type='font'>
+  <link rel="stylesheet" href="{% static 'font-awesome.min.css' %}" type='text/css'> 
+  
+  <style>
+    html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
+    
+  </style>
+  </head>
+  <body class="w3-light-grey">
+    <div class="w3-bar w3-top w3-black w3-large" style="z-index:4">
+      <span class="w3-bar-item w3-left">Home</span>
+      <a href="logout" class="w3-bar-item w3-right">Logout</a>
+    </div>
+
+    <nav class="w3-sidebar w3-collapse w3-white" style="z-index:3;width:300px;" id="mySidebar"><br>
+      
+      <div class="w3-container">
+        <h5>Dashboard</h5>
+      </div>
+      <hr>
+      <div class="w3-bar-block">
+        <a href="#" class="w3-bar-item w3-button w3-padding-16 w3-hide-large w3-dark-grey w3-hover-black" onclick="w3_close()" title="close menu"><i class="fa fa-remove fa-fw"></i>  Close Menu</a>
+        <a href="projects" class="w3-bar-item w3-button w3-padding w3-blue">Projects</a>
+        <a href="tasks" class="w3-bar-item w3-button w3-padding">Tasks</a>
+        <a href="groups" class="w3-bar-item w3-button w3-padding">Groups</a>
+        <a href="friends" class="w3-bar-item w3-button w3-padding">Friends</a>
+        <a href="requests" class="w3-bar-item w3-button w3-padding">Requests({{FR}})</a><br><br>
+      </div>
+    </nav>
+    <div class="w3-overlay w3-hide-large w3-animate-opacity" onclick="w3_close()" style="cursor:pointer" title="close side menu" id="myOverlay"></div>
+    <div class="w3-main" style="margin-left:300px;margin-top:43px;">
+    <hr>
+
+    <div class="w3-bar w3-black w3-large" style="z-index:4">
+        {% for p1 in pro%}
+        <span class="w3-bar-item w3-left">{{p1.project_name}}</span>
+        {% endfor %}
+    </div>
+
+    {% comment %} <div id="chartContainer" style="height: 300px; width: 100%;"></div>
+    <script type="text/javascript" src="{% static "canvasjs.min.js" %}"></script>
+    <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script> {% endcomment %}
+    
+    <div id="chartContainer" style="height: 300px; width: 100%;"></div>
+    <script type="text/javascript" src="{% static "canvasjs.min.js" %}"></script>
+    <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+    {% for g1 in group%}
+    <div id="chartContainer{{g1.group_member}}" style="height: 300px; width: 100%;"></div>
+    <script type="text/javascript" src="{% static "canvasjs.min.js" %}"></script>
+    <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+    {% endfor%}
+  </body>
+</html>
